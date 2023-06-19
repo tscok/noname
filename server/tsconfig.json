@@ -107,12 +107,16 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "files": [
-    "./index.ts"
+    "./index.ts",
+    "types/session-file-store.d.ts",
+    "types/fastify.d.ts"
   ],
   "include": [
-    "**/*"
+    "./auth/googleAuth.ts",
+    "./cert/index.ts",
+    "./index.ts",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
   ]
 }
