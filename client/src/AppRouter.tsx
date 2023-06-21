@@ -1,5 +1,4 @@
-import { FC } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 
 import { AuthRequired, Layout } from './components'
 import { LoginPage, NotFoundPage, DashboardPage, StartPage } from './pages'
@@ -29,6 +28,4 @@ const routes: Route[] = [
   { path: '*', element: <NotFoundPage /> },
 ]
 
-export const AppRouter: FC = () => (
-  <RouterProvider router={createBrowserRouter(routes)} />
-)
+export const AppRouter = createBrowserRouter(routes)

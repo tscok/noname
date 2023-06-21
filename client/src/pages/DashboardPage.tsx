@@ -1,14 +1,15 @@
 import { FC } from 'react'
 
-import { AuthButton, useAuth } from '../components'
+import { useUser } from '../store'
+import { AuthButton } from '../components'
 
 export const DashboardPage: FC = () => {
-  const auth = useAuth()
+  const user = useUser()
 
   return (
     <>
       <h1>Dashboard Page</h1>
-      <p>Welcome {auth.user?.name}!</p>
+      <p>Welcome {user?.name}!</p>
       <AuthButton />
     </>
   )

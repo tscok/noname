@@ -2,7 +2,7 @@ import { Token } from '../../../server/auth/googleAuth'
 
 import Client from './Client.ts'
 
-export default class AuthClient extends Client {
+class AuthClient extends Client {
   constructor() {
     super()
   }
@@ -15,7 +15,9 @@ export default class AuthClient extends Client {
     return '/auth/logout'
   }
 
-  async getCurrentUser(): Promise<Token> {
+  async getCurrentUser(): Promise<Token | null> {
     return this.get('/auth/me')
   }
 }
+
+export default new AuthClient()

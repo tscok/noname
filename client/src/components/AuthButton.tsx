@@ -1,13 +1,14 @@
 import { FC } from 'react'
 
-import { useAuth } from '.'
+import { useUser } from '../store'
+import { auth } from '../utils/auth'
 
 export const AuthButton: FC = () => {
-  const auth = useAuth()
+  const user = useUser()
 
   return (
-    <button onClick={() => (auth.user ? auth.logout() : auth.login())}>
-      {auth.user ? 'Logout' : 'Login'}
+    <button onClick={() => (user?.uid ? auth.logout() : auth.login())}>
+      {user?.uid ? 'Logout' : 'Login'}
     </button>
   )
 }

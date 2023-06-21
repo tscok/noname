@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react'
 
-import { useAuth } from '.'
+import { useUser } from '../store'
 import { Navigate, useLocation } from 'react-router-dom'
 
 interface AuthRequiredProps {
@@ -8,10 +8,10 @@ interface AuthRequiredProps {
 }
 
 export const AuthRequired: FC<AuthRequiredProps> = ({ children }) => {
-  const auth = useAuth()
+  const user = useUser()
   const location = useLocation()
 
-  if (!auth.user) {
+  if (!user?.uid) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
