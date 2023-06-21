@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8080
 const BASE_URL = `https://${HOST}:${PORT}`
 const MAX_AGE = 1000 * 60 * 60 * 24 // 24 hours
 const SESSION_KEY = process.env.SESSION_KEY || ''
-const ROOT_PATH = '/'
+const REDIRECT = { ROOT: '/', DASHBOARD: '/dashboard' }
 const CLIENT_APP = fs.readFileSync(`../public/index.html`, 'utf-8')
 
 type FileStorType = { new (params?: Record<string, unknown>): SessionStore }
@@ -81,7 +81,7 @@ server.get('/auth/google/complete', async (req, reply) => {
   try {
     const token = await getAuthenticatedUser(req.url, BASE_URL)
     req.session.set('token', token)
-    reply.redirect(ROOT_PATH)
+    reply.redirect(REDIRECT.DASHBOARD)
   } catch (e) {
     reply.status(403).send(e)
   }
@@ -90,7 +90,7 @@ server.get('/auth/google/complete', async (req, reply) => {
 // Handle logout
 server.get('/auth/logout', async (req, reply) => {
   await req.session.destroy()
-  reply.redirect(ROOT_PATH)
+  reply.redirect(REDIRECT.ROOT)
 })
 
 // Expose current user
