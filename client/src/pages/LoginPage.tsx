@@ -1,13 +1,14 @@
 import { FC } from 'react'
 
-import { AuthButton, useAuth } from '../components'
+import { useUser } from '../store'
+import { AuthButton } from '../components'
 import { Navigate, useLocation } from 'react-router-dom'
 
 export const LoginPage: FC = () => {
-  const auth = useAuth()
+  const user = useUser()
   const location = useLocation()
 
-  if (auth.user && location.state.from) {
+  if (user?.uid && location.state.from) {
     return <Navigate to={location.state.from} replace />
   }
 
