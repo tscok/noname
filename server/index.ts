@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import fs from 'fs'
 import fastify from 'fastify'
 import fastifyStatic from '@fastify/static'
 import fastifyCors from '@fastify/cors'
@@ -6,19 +7,16 @@ import fastifyCookie from '@fastify/cookie'
 import { fastifySession, SessionStore } from '@fastify/session'
 import sessionFileStore from 'session-file-store'
 import path from 'path'
-import {
-  getAuthenticationUrl,
-  getAuthenticatedUser,
-  Token,
-} from './auth/googleAuth'
+import { getAuthenticationUrl, getAuthenticatedUser } from './auth/googleAuth'
 import { HTTPS_CERT, HTTPS_KEY } from './cert'
 
 const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || 8080
 const BASE_URL = `https://${HOST}:${PORT}`
-const MAX_AGE = 1000 * 60 * 5 // 1000 * 60 * 60 * 24 * 7 // 7 days
+const MAX_AGE = 1000 * 60 * 60 * 24 // 24 hours
 const SESSION_KEY = process.env.SESSION_KEY || ''
 const ROOT_PATH = '/'
+const CLIENT_APP = fs.readFileSync(`../public/index.html`, 'utf-8')
 
 type FileStorType = { new (params?: Record<string, unknown>): SessionStore }
 const FileStore: FileStorType = sessionFileStore(fastifySession)
@@ -31,16 +29,21 @@ type FastifyOptions = {
   }
 }
 
-const fastifyOptions: FastifyOptions =
-  process.env.NODE_ENV === 'production'
+function getFastifyOptions(): FastifyOptions {
+  return process.env.NODE_ENV === 'production'
     ? { trustProxy: true }
     : { https: { cert: HTTPS_CERT, key: HTTPS_KEY } }
+}
 
-const server = fastify(fastifyOptions)
+const server = fastify(getFastifyOptions())
 
 server.register(fastifyCookie)
 server.register(fastifySession, {
-  cookie: { maxAge: MAX_AGE, sameSite: 'none', secure: 'auto' },
+  cookie: {
+    maxAge: MAX_AGE,
+    sameSite: 'none',
+    secure: 'auto',
+  },
   secret: SESSION_KEY,
   store: new FileStore({ path: './sessions' }),
 })
@@ -61,6 +64,11 @@ server.addHook('preHandler', (req, reply, next) => {
     req.user = null
   }
   next()
+})
+
+// Client routing "catchall"
+server.get('/:*', (_, reply) => {
+  reply.type('text/html').send(CLIENT_APP)
 })
 
 // Handle Google login
@@ -89,7 +97,6 @@ server.get('/auth/logout', async (req, reply) => {
 server.get('/auth/me', (req) => req.user)
 
 // Start server
-
 function start() {
   try {
     server.register(fastifyCors, {
