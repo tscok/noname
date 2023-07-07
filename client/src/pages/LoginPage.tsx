@@ -1,22 +1,14 @@
 import { FC } from 'react'
 
-import { useUser } from '../store'
-import { AuthButton } from '../components'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Div, Page, PageTitle, Paragraph } from '../ui'
+import { LoginButton } from '../components'
 
-export const LoginPage: FC = () => {
-  const user = useUser()
-  const location = useLocation()
-
-  if (user?.uid && location.state.from) {
-    return <Navigate to={location.state.from} replace />
-  }
-
-  return (
-    <>
-      <h1>Login Page</h1>
-      <p>Please login to continue</p>
-      <AuthButton />
-    </>
-  )
-}
+export const LoginPage: FC = () => (
+  <Page centered>
+    <PageTitle>Hello Login</PageTitle>
+    <Paragraph textAlign="center">Some pages require authentication</Paragraph>
+    <Div sx={{ mt: 2 }}>
+      <LoginButton />
+    </Div>
+  </Page>
+)

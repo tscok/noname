@@ -1,14 +1,12 @@
 import { FC } from 'react'
 
-import { useUser } from '../store'
-import { auth } from '../utils/auth'
+import AuthClient from '../api/AuthClient'
+import { Button } from '../ui'
 
-export const AuthButton: FC = () => {
-  const user = useUser()
+export const LoginButton: FC = () => (
+  <Button onClick={() => AuthClient.login()}>Login</Button>
+)
 
-  return (
-    <button onClick={() => (user?.uid ? auth.logout() : auth.login())}>
-      {user?.uid ? 'Logout' : 'Login'}
-    </button>
-  )
-}
+export const LogoutButton: FC = () => (
+  <Button onClick={() => AuthClient.logout()}>Logout</Button>
+)

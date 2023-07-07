@@ -7,12 +7,12 @@ class AuthClient extends Client {
     super()
   }
 
-  login() {
-    return '/auth/login'
+  login(): void {
+    window.location.href = '/auth/login'
   }
 
-  logout() {
-    return '/auth/logout'
+  logout(): void {
+    window.location.href = '/auth/logout'
   }
 
   async getCurrentUser(): Promise<Token | null> {
