@@ -1,14 +1,14 @@
 import { FC } from 'react'
 import { Outlet } from 'react-router-dom'
 
-import { Navigation } from '.'
+import Navigation from './Navigation'
+import { NavBarContent as NavigationSpacer } from '../ui/nav/NavBarContent'
 
 export const Layout: FC = () => (
   <>
-    <nav>
-      <Navigation />
-    </nav>
+    <Navigation />
     <main>
+      <NavigationSpacer />
       <Outlet />
     </main>
   </>

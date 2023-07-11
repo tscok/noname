@@ -1,23 +1,8 @@
-import { FC, ReactNode, useEffect } from 'react'
+import { FC, PropsWithChildren } from 'react'
 import { Provider } from 'jotai'
 
-import client from '../api/AuthClient'
-import { store, userAtom, unsub } from './store'
+import { store } from './store'
 
-interface StoreProviderProps {
-  children: ReactNode
-}
-
-export const StoreProvider: FC<StoreProviderProps> = ({ children }) => {
-  useEffect(() => {
-    ;(async () => {
-      const currentUser = await client.getCurrentUser()
-      store.set(userAtom, currentUser)
-    })()
-    return () => {
-      unsub()
-    }
-  })
-
-  return <Provider store={store}>{children}</Provider>
-}
+export const StoreProvider: FC<PropsWithChildren> = ({ children }) => (
+  <Provider store={store}>{children}</Provider>
+)
