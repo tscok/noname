@@ -1,12 +1,17 @@
-import 'dotenv/config'
 import { OAuth2Client, TokenPayload } from 'google-auth-library'
 import { decode } from 'jsonwebtoken'
 import { URL } from 'url'
 
+import {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_REDIRECT_URI,
+} from '../config'
+
 const authClient = new OAuth2Client(
-  process.env.GOOGLE_OIDC_CLIENT_ID,
-  process.env.GOOGLE_OIDC_CLIENT_SECRET,
-  process.env.GOOGLE_OIDC_REDIRECT_URI
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_REDIRECT_URI
 )
 
 export type Token = Pick<TokenPayload, 'email' | 'name' | 'picture'> & {

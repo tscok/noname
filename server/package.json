@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json",
-    "start": "nodemon --exec ts-node index.ts"
+    "start": "nodemon --exec ts-node index.ts",
+    "update:api": "npx swagger-typescript-api -p https://api.cinode.com/swagger/v0.1/swagger.json -o ./cinode/__generated__ --modular"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "jsonwebtoken": "^9.0.0",
     "nodemon": "^2.0.22",
     "session-file-store": "^1.5.0",
+    "swagger-typescript-api": "^12.0.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.3"
   }

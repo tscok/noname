@@ -112,9 +112,11 @@
     "types/fastify.d.ts"
   ],
   "include": [
-    "./auth/googleAuth.ts",
-    "./cert/index.ts",
+    "./auth/*",
+    "./cert/*",
+    "./cinode/*",
     "./index.ts",
+    "./config.ts",
   ],
   "exclude": [
     "node_modules",
