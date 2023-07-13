@@ -1,27 +1,26 @@
 import 'dotenv/config'
-import fs from 'fs'
-import fastify from 'fastify'
+import fastify, { FastifyRequest } from 'fastify'
 import fastifyStatic from '@fastify/static'
 import fastifyCors from '@fastify/cors'
 import fastifyCookie from '@fastify/cookie'
 import { fastifySession, SessionStore } from '@fastify/session'
 import sessionFileStore from 'session-file-store'
 import path from 'path'
+
+import { userClient } from './cinode'
 import { getAuthenticationUrl, getAuthenticatedUser } from './auth/googleAuth'
 import { HTTPS_CERT, HTTPS_KEY } from './cert'
+import {
+  SESSION_KEY,
+  SESSION_MAX_AGE,
+  FRONTEND_APP,
+  FRONTEND_ROUTE,
+  FRONTEND_URL,
+} from './config'
 
 const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || 8080
 const BASE_URL = `https://${HOST}:${PORT}`
-const MAX_AGE = 1000 * 60 * 60 * 24 // 24 hours
-const SESSION_KEY = process.env.SESSION_KEY || ''
-const REDIRECT = {
-  ROOT: '/',
-  PROFILE: '/profile',
-  LOGOUT: '/logout',
-  LOGIN: '/login',
-}
-const CLIENT_APP = fs.readFileSync(`../public/index.html`, 'utf-8')
 
 type FileStorType = { new (params?: Record<string, unknown>): SessionStore }
 const FileStore: FileStorType = sessionFileStore(fastifySession)
@@ -45,7 +44,7 @@ const server = fastify(getFastifyOptions())
 server.register(fastifyCookie)
 server.register(fastifySession, {
   cookie: {
-    maxAge: MAX_AGE,
+    maxAge: SESSION_MAX_AGE,
     sameSite: 'none',
     secure: 'auto',
   },
@@ -73,7 +72,7 @@ server.addHook('preHandler', (req, reply, next) => {
 
 // Client routing "catchall"
 server.get('/:*', (_, reply) => {
-  reply.type('text/html').send(CLIENT_APP)
+  reply.type('text/html').send(FRONTEND_APP)
 })
 
 // Handle Google login
@@ -86,7 +85,7 @@ server.get('/auth/google/complete', async (req, reply) => {
   try {
     const token = await getAuthenticatedUser(req.url, BASE_URL)
     req.session.set('token', token)
-    reply.redirect(REDIRECT.PROFILE)
+    reply.redirect(FRONTEND_ROUTE.PROFILE)
   } catch (e) {
     reply.status(403).send(e)
   }
@@ -95,11 +94,20 @@ server.get('/auth/google/complete', async (req, reply) => {
 // Handle logout
 server.get('/auth/logout', async (req, reply) => {
   await req.session.destroy()
-  reply.redirect(REDIRECT.LOGOUT)
+  reply.redirect(FRONTEND_ROUTE.LOGOUT)
 })
 
 // Expose current user
 server.get('/auth/me', (req) => req.user)
+
+server.get('/api/users', async () => {
+  return await userClient.getUsers()
+})
+
+server.get('/api/users/:userId', async (req) => {
+  const { userId } = req.params as { userId: number }
+  return await userClient.getUser(userId)
+})
 
 // Start server
 function start() {
@@ -107,7 +115,7 @@ function start() {
     server.register(fastifyCors, {
       credentials: true,
       methods: ['GET', 'PUT', 'POST'],
-      origin: process.env.FE_URL,
+      origin: FRONTEND_URL,
     })
     server.listen({ host: HOST, port: Number(PORT) }, (err) => {
       if (err) {
