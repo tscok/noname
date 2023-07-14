@@ -1,14 +1,29 @@
+import { cacheRequest } from '../cache'
 import { apiClient } from './ApiClient'
+
+type SimpleUser = {
+  firstName: string
+  lastName: string
+  userId: number
+}
 
 class UserClient {
   async getUsers() {
-    const { data } = await apiClient.getUsers()
-    return data
+    return cacheRequest('USERS', async () => {
+      const { data } = await apiClient.getUsers()
+      return data.map<SimpleUser>((user) => ({
+        firstName: String(user.firstName),
+        lastName: String(user.lastName),
+        userId: Number(user.companyUserId),
+      }))
+    })
   }
 
   async getUser(userId: number) {
-    const { data } = await apiClient.getUser(userId)
-    return data
+    return cacheRequest(`USER-${userId}`, async () => {
+      const { data } = await apiClient.getUser(userId)
+      return data
+    })
   }
 }
 
