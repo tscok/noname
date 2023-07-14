@@ -16,8 +16,12 @@ export const ErrorPage: FC = () => {
       <Paragraph textAlign="center">
         Sorry, an unexpected error has occurred
       </Paragraph>
-      <Paragraph textAlign="center" variant="body2" sx={{ mt: 2 }}>
-        <i>{statusText}</i>
+      <Paragraph
+        textAlign="center"
+        sx={{ mt: 2, fontWeight: 700 }}
+        variant="body2"
+      >
+        {statusText}
       </Paragraph>
     </Page>
   )

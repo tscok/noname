@@ -1,5 +1,4 @@
 import { FC } from 'react'
-import { RouterProvider } from 'react-router-dom'
 import CssBaseline from '@mui/material/CssBaseline'
 
 import { ThemeProvider, useTheme } from './ui/theme'
@@ -11,7 +10,7 @@ const App: FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <RouterProvider router={AppRouter} />
+      <AppRouter />
     </ThemeProvider>
   )
 }

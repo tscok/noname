@@ -3,10 +3,6 @@ import { Token } from '../../../server/auth/googleAuth'
 import Client from './Client.ts'
 
 class AuthClient extends Client {
-  constructor() {
-    super()
-  }
-
   login(): void {
     window.location.href = '/auth/login'
   }

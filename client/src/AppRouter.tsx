@@ -1,5 +1,5 @@
 import {
-  LoaderFunction,
+  RouteObject,
   RouterProvider,
   createBrowserRouter,
   redirect,
@@ -17,23 +17,6 @@ import {
 import { store, userAtom } from './store'
 import AuthClient from './api/AuthClient'
 
-type LayoutRoute = {
-  children: PageRoute[]
-  element: JSX.Element
-  errorElement: JSX.Element
-  loader: LoaderFunction
-}
-
-type PageRoute = {
-  element: JSX.Element
-  loader?: LoaderFunction
-  path: string
-}
-
-type NamedRoute = PageRoute & {
-  name: string
-}
-
 const authRequired = () => {
   const user = store.get(userAtom)
   return user ? null : redirect('/login')
@@ -45,14 +28,25 @@ const redirectIfUser = () => {
 }
 
 const loadCurrentUser = async () => {
-  const user = await AuthClient.getCurrentUser()
-  store.set(userAtom, user)
+  try {
+    const user = await AuthClient.getCurrentUser()
+    store.set(userAtom, user)
+  } catch (e) {
+    // Ignore
+  }
   return null
 }
 
 const logoutUser = () => {
   store.set(userAtom, null)
   return null
+}
+
+type NamedRoute = {
+  path: string
+  element: JSX.Element
+  loader?: () => Response | null
+  name: string
 }
 
 export const namedPages: NamedRoute[] = [
@@ -65,7 +59,7 @@ export const namedPages: NamedRoute[] = [
   },
 ]
 
-const routes: LayoutRoute[] = [
+const routes: RouteObject[] = [
   {
     element: <Layout />,
     errorElement: <ErrorPage />,
@@ -92,8 +86,6 @@ const routes: LayoutRoute[] = [
   },
 ]
 
-export const AppRouter = () => {
-  return <RouterProvider router={createBrowserRouter(routes)} />
-}
+const AppRouter = () => <RouterProvider router={createBrowserRouter(routes)} />
 
-export default createBrowserRouter(routes)
+export default AppRouter

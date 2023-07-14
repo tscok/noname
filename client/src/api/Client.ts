@@ -1,7 +1,19 @@
 export default class Client {
-  async get(path: string) {
-    const response = await fetch(path)
-    const data = await response.json()
-    return data
+  async makeRequest(path: string, method: 'GET' | 'POST', body?: any) {
+    try {
+      const response = await fetch(path, { method, body })
+      const data = await response.json()
+      return data
+    } catch (e) {
+      throw new Error(`${method} request to ${path} failed`)
+    }
+  }
+
+  get(path: string) {
+    return this.makeRequest(path, 'GET')
+  }
+
+  post(path: string, body?: any) {
+    return this.makeRequest(path, 'POST', body)
   }
 }
