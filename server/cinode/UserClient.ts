@@ -1,14 +1,13 @@
+import { cacheRequest, KEY } from '../cache'
 import { apiClient } from './ApiClient'
 
 class UserClient {
   async getUsers() {
-    const { data } = await apiClient.getUsers()
-    return data
+    return cacheRequest(KEY.USERS, () => apiClient.getUsers())
   }
 
   async getUser(userId: number) {
-    const { data } = await apiClient.getUser(userId)
-    return data
+    return cacheRequest(KEY.USER, () => apiClient.getUser(userId))
   }
 }
 
