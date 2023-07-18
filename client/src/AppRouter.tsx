@@ -8,11 +8,11 @@ import {
 import { Layout } from './components'
 import {
   ErrorPage,
-  PrivatePage,
   PublicPage,
   ProfilePage,
   LoginPage,
   LogoutPage,
+  UsersPage,
 } from './pages'
 import { store, userAtom } from './store'
 import AuthClient from './api/AuthClient'
@@ -52,10 +52,10 @@ type NamedRoute = {
 export const namedPages: NamedRoute[] = [
   { path: '/', element: <PublicPage />, name: 'Public' },
   {
-    path: 'private',
-    element: <PrivatePage />,
+    path: 'users',
+    element: <UsersPage />,
     loader: authRequired,
-    name: 'Private',
+    name: 'Users',
   },
 ]
 
