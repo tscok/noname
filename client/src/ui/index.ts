@@ -1,6 +1,7 @@
 export * from './Avatar'
 export * from './Div'
 export * from './Divider'
+export * from './Spinner'
 
 export * from './button/Button'
 export * from './button/UserIconButton'

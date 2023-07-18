@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider'
 import { NavBarContent } from './NavBarContent'
 
 export const NavBar: FC<PropsWithChildren> = (props) => (
-  <AppBar color="transparent" component="nav" elevation={0} position="fixed">
+  <AppBar color="inherit" component="nav" elevation={0} position="fixed">
     <NavBarContent {...props} />
     <Divider />
   </AppBar>
