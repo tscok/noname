@@ -104,6 +104,10 @@ server.get('/api/users', async () => {
   return await userClient.getUsers()
 })
 
+server.get('/api/users/available', async () => {
+  return await userClient.getUsersAvailable()
+})
+
 server.get('/api/users/:userId', async (req) => {
   const { userId } = req.params as { userId: number }
   return await userClient.getUser(userId)
