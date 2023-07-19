@@ -12,6 +12,8 @@ function ensureEnv(key: string): string {
 export const ACCESS_ID = ensureEnv('CINODE_ACCESS_ID')
 export const ACCESS_SECRET = ensureEnv('CINODE_ACCESS_SECRET')
 export const COMPANY_ID = Number(ensureEnv('CINODE_COMPANY_ID'))
+export const RATE_LIMIT = 40 // max number of requests within the rate limit timeframe
+export const RATE_LIMIT_TIMEFRAME = 2000
 
 export const GOOGLE_CLIENT_ID = ensureEnv('GOOGLE_OIDC_CLIENT_ID')
 export const GOOGLE_CLIENT_SECRET = ensureEnv('GOOGLE_OIDC_CLIENT_SECRET')
