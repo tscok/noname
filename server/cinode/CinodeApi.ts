@@ -1,6 +1,11 @@
 import { ApiConfig, RequestParams } from './__generated__/http-client'
 import { V01 as Api } from './__generated__/V01'
 
+export {
+  CompanyUserExtendedModel,
+  CompanyUserModel,
+} from './__generated__/data-contracts'
+
 type AuthToken = {
   access_token: string
   refresh_token: string
