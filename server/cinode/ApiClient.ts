@@ -12,6 +12,10 @@ class ApiClient {
     return api.user(COMPANY_ID, userId, { secure: true })
   }
 
+  getUserSkills(userId: number) {
+    return api.skills(COMPANY_ID, userId, { secure: true })
+  }
+
   getAvailability(startDate: string, endDate: string) {
     return api.searchAvailability(
       COMPANY_ID,

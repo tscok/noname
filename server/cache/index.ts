@@ -13,8 +13,7 @@ export async function cacheRequest<T>(
   if (cached) {
     return cached
   }
-  console.log('-- FETCHING CINODE DATA --')
-  const data = await enqueue(request)
+  const data = await enqueue(request, key)
   nodeCache.set(key, data)
   return data
 }

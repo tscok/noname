@@ -2,8 +2,10 @@ import { ApiConfig, RequestParams } from './__generated__/http-client'
 import { V01 as Api } from './__generated__/V01'
 
 export {
+  AvailabilityModel,
   CompanyUserExtendedModel,
   CompanyUserModel,
+  CompanyUserSkillModel,
 } from './__generated__/data-contracts'
 
 type AuthToken = {

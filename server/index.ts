@@ -105,12 +105,21 @@ server.get('/api/users', async () => {
 })
 
 server.get('/api/users/available', async () => {
-  return await userClient.getUsersAvailable()
+  return await userClient.getAvailableUsers()
+})
+
+server.get('/api/users/available/skills', async () => {
+  return await userClient.getAvailableSkills()
 })
 
 server.get('/api/users/:userId', async (req) => {
   const { userId } = req.params as { userId: number }
   return await userClient.getUser(userId)
+})
+
+server.get('/api/users/:userId/skills', async (req) => {
+  const { userId } = req.params as { userId: number }
+  return await userClient.getUserSkills(userId)
 })
 
 // Start server
