@@ -7,12 +7,12 @@ import {
 
 import { Layout } from './components'
 import {
+  DashboardPage,
   ErrorPage,
-  PublicPage,
-  ProfilePage,
   LoginPage,
   LogoutPage,
-  UsersPage,
+  ProfilePage,
+  StartPage,
 } from './pages'
 import { store, userAtom } from './store'
 import AuthClient from './api/AuthClient'
@@ -42,30 +42,21 @@ const logoutUser = () => {
   return null
 }
 
-type NamedRoute = {
-  path: string
-  element: JSX.Element
-  loader?: () => Response | null
-  name: string
-}
-
-export const namedPages: NamedRoute[] = [
-  { path: '/', element: <PublicPage />, name: 'Public' },
-  {
-    path: 'users',
-    element: <UsersPage />,
-    loader: authRequired,
-    name: 'Users',
-  },
-]
-
 const routes: RouteObject[] = [
   {
     element: <Layout />,
     errorElement: <ErrorPage />,
     loader: loadCurrentUser,
     children: [
-      ...namedPages,
+      {
+        path: '/',
+        element: <StartPage />,
+      },
+      {
+        path: 'dashboard',
+        element: <DashboardPage />,
+        loader: authRequired,
+      },
       {
         path: 'profile',
         element: <ProfilePage />,

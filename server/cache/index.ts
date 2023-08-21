@@ -11,6 +11,7 @@ export async function cacheRequest<T>(
 ): Promise<T> {
   const cached = nodeCache.get(key) as T
   if (cached) {
+    console.log(`-- SERVING CACHED -- ${key} --`)
     return cached
   }
   const data = await enqueue(request, key)

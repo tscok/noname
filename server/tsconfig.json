@@ -116,7 +116,7 @@
     "./cert/*",
     "./cinode/*",
     "./index.ts",
-    "./config.ts",
+    "./config.ts", "cinode/utils/hasTitle.ts",
   ],
   "exclude": [
     "node_modules",

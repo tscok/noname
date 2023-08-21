@@ -100,26 +100,24 @@ server.get('/auth/logout', async (req, reply) => {
 // Expose current user
 server.get('/auth/me', (req) => req.user)
 
-server.get('/api/users', async () => {
-  return await userClient.getUsers()
+server.get('/api/users/available/:startDate?', async (req) => {
+  const { startDate } = req.params as { startDate: string }
+  return await userClient.getAvailableConsultants(startDate)
 })
 
-server.get('/api/users/available', async () => {
-  return await userClient.getAvailableUsers()
+server.get('/api/users/unavailable/:startDate?', async (req) => {
+  const { startDate } = req.params as { startDate: string }
+  return await userClient.getUnavailableConsultants(startDate)
 })
 
-server.get('/api/users/available/skills', async () => {
-  return await userClient.getAvailableSkills()
+server.get('/api/users/available/:startDate/skills', async (req) => {
+  const { startDate } = req.params as { startDate: string }
+  return await userClient.getAvailableSkills(startDate)
 })
 
-server.get('/api/users/:userId', async (req) => {
-  const { userId } = req.params as { userId: number }
-  return await userClient.getUser(userId)
-})
-
-server.get('/api/users/:userId/skills', async (req) => {
-  const { userId } = req.params as { userId: number }
-  return await userClient.getUserSkills(userId)
+server.get('/api/users/stats/:startDate', async (req) => {
+  const { startDate } = req.params as { startDate: string }
+  return await userClient.getStatistics(startDate)
 })
 
 // Start server
