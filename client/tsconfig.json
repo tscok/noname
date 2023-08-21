@@ -18,7 +18,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path Mapping */
+    "paths": { "@backend/*": ["../server/types/index.ts"], }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

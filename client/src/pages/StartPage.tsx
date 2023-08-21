@@ -2,7 +2,7 @@ import { FC } from 'react'
 
 import { Page, PageTitle, Paragraph } from '../ui'
 
-export const PublicPage: FC = () => (
+export const StartPage: FC = () => (
   <Page centered>
     <PageTitle>Hello World</PageTitle>
     <Paragraph textAlign="center">

@@ -15,7 +15,6 @@ import {
 } from '../ui'
 import { APP_NAME } from '../utils/config'
 import { useMode, useUser } from '../store'
-import { namedPages } from '../AppRouter'
 
 const Navigation: FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -37,11 +36,7 @@ const Navigation: FC = () => {
         <MenuIconButton onClick={toggleMenu} />
         <NavBarTitle>{APP_NAME}</NavBarTitle>
         <TabletMenu>
-          {namedPages.map(({ name, path }) => (
-            <TabletMenuItem key={name} to={path}>
-              {name}
-            </TabletMenuItem>
-          ))}
+          <TabletMenuItem to="/dashboard">Dashboard</TabletMenuItem>
         </TabletMenu>
         <Div flexGrow={1} />
         <ModeIconButton mode={mode} onClick={toggleMode} />
@@ -52,11 +47,9 @@ const Navigation: FC = () => {
         />
       </NavBar>
       <MobileMenu onClose={toggleMenu} open={menuOpen}>
-        {namedPages.map(({ name, path }) => (
-          <MobileMenuItem key={name} onClick={toggleMenu} to={path}>
-            {name}
-          </MobileMenuItem>
-        ))}
+        <MobileMenuItem onClick={toggleMenu} to="/dashboard">
+          Dashboard
+        </MobileMenuItem>
       </MobileMenu>
     </>
   )
