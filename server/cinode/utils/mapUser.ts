@@ -1,4 +1,4 @@
-import { Availability, Skill, User } from '../../types'
+import { UserAvailability, Skill, User } from '../../types'
 import {
   AvailabilityModel,
   CompanyUserExtendedModel,
@@ -30,7 +30,7 @@ export function mapToUserSkill(model: CompanyUserSkillModel): Skill {
   }
 }
 
-export function mapToAvailability(model: AvailabilityModel): Availability {
+export function mapToAvailability(model: AvailabilityModel): UserAvailability {
   return {
     userId: Number(model.companyUserId),
     availability: Number(model.availability),
@@ -38,7 +38,7 @@ export function mapToAvailability(model: AvailabilityModel): Availability {
 }
 
 export function getAvailabilityMap(
-  availability: Availability[]
+  availability: UserAvailability[]
 ): Map<number, number> {
   return new Map(
     availability.map(({ availability, userId }) => [userId, availability])

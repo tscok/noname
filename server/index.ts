@@ -100,24 +100,17 @@ server.get('/auth/logout', async (req, reply) => {
 // Expose current user
 server.get('/auth/me', (req) => req.user)
 
-server.get('/api/users/available/:startDate?', async (req) => {
+server.get('/api/users/statistics/:startDate', async (req) => {
   const { startDate } = req.params as { startDate: string }
-  return await userClient.getAvailableConsultants(startDate)
+  return await userClient.getUserStatistics(startDate)
 })
 
-server.get('/api/users/unavailable/:startDate?', async (req) => {
-  const { startDate } = req.params as { startDate: string }
-  return await userClient.getUnavailableConsultants(startDate)
-})
-
-server.get('/api/users/available/:startDate/skills', async (req) => {
-  const { startDate } = req.params as { startDate: string }
-  return await userClient.getAvailableSkills(startDate)
-})
-
-server.get('/api/users/stats/:startDate', async (req) => {
-  const { startDate } = req.params as { startDate: string }
-  return await userClient.getStatistics(startDate)
+server.get('/api/users/statistics/:startDate/skills/:limit', async (req) => {
+  const { startDate, limit } = req.params as {
+    startDate: string
+    limit: number
+  }
+  return await userClient.getSkillStatistics(startDate, limit)
 })
 
 // Start server
