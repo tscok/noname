@@ -1,14 +1,14 @@
 import Client from './Client'
 
-import { EnhancedSkill, UsersStats } from '@backend/cinode/UserClient'
+import { SkillWithStats, UsersStats } from '@backend/cinode/UserClient'
 
 class UserClient extends Client {
   async getStats(startDate: string): Promise<UsersStats> {
-    return this.get(`/api/users/stats/${startDate}`)
+    return this.get(`/api/users/statistics/${startDate}`)
   }
 
-  async getSkills(startDate: string): Promise<EnhancedSkill[]> {
-    return this.get(`/api/users/available/${startDate}/skills`)
+  async getSkills(startDate: string, limit: number): Promise<SkillWithStats[]> {
+    return this.get(`/api/users/statistics/${startDate}/skills/${limit}`)
   }
 }
 

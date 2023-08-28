@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react'
 type QueryState<T> = {
   data?: T
   error?: Error
-  status: 'loading' | 'idle'
+  status: QueryStatus
 }
+
+export type QueryStatus = 'loading' | 'idle'
 
 export default function useQuery<T>(request: () => Promise<T>) {
   const [state, setState] = useState<QueryState<T>>({ status: 'idle' })

@@ -6,9 +6,17 @@ export type User = {
   userId: number
 }
 
-export type Consultant = User & {
+export type UserAvailability = {
   availability: number
-  skills?: Skill[]
+  userId: number
+}
+
+export type Consultant = User & UserAvailability
+
+export type ConsultantAvailability = {
+  available: Consultant[]
+  unavailable: Consultant[]
+  other: Consultant[]
 }
 
 export type Skill = {
@@ -23,16 +31,30 @@ export type UserImage = {
   smallImageUrl: string
 }
 
-export type EnhancedSkill = Pick<Skill, 'id' | 'name'> & {
-  popularity: number
+export type SkillWithStats = {
+  id: number
+  name: string
+  stats: SkillStats
 }
 
-export type Availability = {
-  availability: number
-  userId: number
+export type SkillStats = {
+  avgLevel: number
+  favourites: number
+  users: number
 }
 
 export type UsersStats = {
-  available: number
+  available: {
+    rawValue: number
+    percentage: number
+  }
+  unavailable: {
+    rawValue: number
+    percentage: number
+  }
+  other: {
+    rawValue: number
+    percentage: number
+  }
   total: number
 }

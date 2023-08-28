@@ -1,126 +1,163 @@
 import { cacheRequest } from '../cache'
 import {
+  getPercent,
+  getSkillStats,
   hasTitle,
   mapToAvailability,
   mapToUserSkill,
   mapToUser,
-  getUsersMap,
-  getAvailabilityMap,
+  sortByStats,
 } from './utils'
 import {
-  Availability,
   Consultant,
-  EnhancedSkill,
+  ConsultantAvailability,
   Skill,
+  SkillWithStats,
   User,
+  UserAvailability,
   UsersStats,
 } from '../types'
 import { apiClient } from './ApiClient'
 
 const TODAY = new Intl.DateTimeFormat('sv-SE').format(new Date())
+
 class UserClient {
-  async getUsers(): Promise<User[]> {
-    const allUsers = await cacheRequest('ALL-USERS', async () => {
-      const { data } = await apiClient.getUsers()
-      return data
+  async getUsers(id: string): Promise<User[]> {
+    return await cacheRequest(`ALL-USERS-${id}`, async () => {
+      try {
+        const { data } = await apiClient.getUsers()
+        return data.map(mapToUser)
+      } catch (e) {
+        return []
+      }
     })
-    return allUsers.map(mapToUser)
   }
 
-  async getAvailability(fromDate: string = TODAY): Promise<Availability[]> {
+  async getAvailability(fromDate: string = TODAY): Promise<UserAvailability[]> {
     const startDate = new Date(fromDate)
     const endDate = new Date(
       new Date(fromDate).setMonth(startDate.getMonth() + 1)
     )
     return await cacheRequest(`AVAILABILITY-${fromDate}`, async () => {
-      const { data } = await apiClient.getAvailability(
-        startDate.toISOString(),
-        endDate.toISOString()
-      )
-      return data.map(mapToAvailability)
+      try {
+        const { data } = await apiClient.getAvailability(
+          startDate.toISOString(),
+          endDate.toISOString()
+        )
+        return data.map(mapToAvailability)
+      } catch (e) {
+        return []
+      }
     })
   }
 
-  async getSkillsById(userId: number): Promise<Skill[]> {
+  async getUserSkills(userId: number): Promise<Skill[]> {
     return await cacheRequest(`USER-${userId}-SKILLS`, async () => {
-      const { data } = await apiClient.getUserSkills(userId)
-      return data.map(mapToUserSkill)
+      try {
+        const { data } = await apiClient.getUserSkills(userId)
+        return data.map(mapToUserSkill)
+      } catch (e) {
+        return []
+      }
     })
   }
 
-  async getSkillsByUsers(users: User[], id: string): Promise<Skill[][]> {
-    return await cacheRequest(`USER-SKILLS-${id}`, async () => {
-      return await Promise.all(
-        users.map((user) => this.getSkillsById(user.userId))
-      )
+  async getUsersSkills(users: User[], id: string): Promise<Skill[]> {
+    return await cacheRequest(`USERS-SKILLS-${id}`, async () => {
+      const promises = users.map((user) => this.getUserSkills(user.userId))
+      const result = await Promise.all(promises)
+      return result.flat()
     })
   }
 
-  async getEnhancedSkills(users: User[], id: string): Promise<EnhancedSkill[]> {
-    function getScore(skill: Skill, newScore: number) {
-      return Number(skill.favourite) + skill.level + newScore
-    }
-    return await cacheRequest(`ENHANCED-SKILLS-${id}`, async () => {
-      const skills = await this.getSkillsByUsers(users, id)
-      const enhancedSkills = new Map<number, EnhancedSkill>()
-      skills.flat().forEach((skill) => {
-        const enhanced = enhancedSkills.get(skill.id)
-        if (enhanced) {
-          enhancedSkills.set(skill.id, {
-            ...enhanced,
-            popularity: getScore(skill, enhanced.popularity + 1),
-          })
-        } else {
-          enhancedSkills.set(skill.id, {
-            id: skill.id,
-            name: skill.name,
-            popularity: getScore(skill, 1),
-          })
+  async getSkillsWithStats(
+    users: User[],
+    id: string
+  ): Promise<SkillWithStats[]> {
+    return await cacheRequest(`SKILLS-WITH-STATS-${id}`, async () => {
+      const usersSkills = await this.getUsersSkills(users, id)
+      const ids = new Set(usersSkills.map((skill) => skill.id))
+      return Array.from(ids, (id) => {
+        const skills = usersSkills.filter((skill) => skill.id === id)
+        return {
+          id: skills[0].id,
+          name: skills[0].name,
+          stats: getSkillStats(skills),
         }
       })
-      return Array.from(enhancedSkills, ([_, skill]) => skill)
     })
   }
 
-  async getAvailableSkills(date: string = TODAY) {
-    const users = await this.getAvailableConsultants(date)
-    return await this.getEnhancedSkills(users, date)
+  async getSkillStatistics(date: string = TODAY, limit: number = 5) {
+    return cacheRequest(`SKILL-STATISTICS-${date}`, async () => {
+      const { available } = await this.getConsultantsByAvailability(date)
+      const skills = await this.getSkillsWithStats(available, date)
+      return skills.sort((a, b) => sortByStats(b, a)).slice(0, limit)
+    })
+  }
+
+  async getConsultantsByAvailability(
+    date: string = TODAY
+  ): Promise<ConsultantAvailability> {
+    return await cacheRequest(`CONSULTANT-AVAILABILITY-${date}`, async () => {
+      const users = await this.getConsultants(date)
+      return {
+        available: users.filter((user) => user.availability === 1),
+        unavailable: users.filter((user) => user.availability === 0),
+        other: users.filter((user) => user.availability === -1),
+      }
+    })
   }
 
   async getConsultants(date: string = TODAY): Promise<Consultant[]> {
-    return cacheRequest(`CONSULTANTS-${date}`, async () => {
-      const allUsers = await this.getUsers()
-      const usersAvailability = await this.getAvailability(date)
-      const availabilityMap = getAvailabilityMap(usersAvailability)
-      const usersMap = getUsersMap(allUsers.filter(hasTitle))
-      const consultants: Consultant[] = []
-      availabilityMap.forEach((availability, userId) => {
-        const user = usersMap.get(userId)
-        if (user) {
-          consultants.push({ ...user, availability })
+    return await cacheRequest(`CONSULTANTS-${date}`, async () => {
+      const users = await this.getUsers(date)
+      const usersMap = new Map(users.filter(hasTitle).map((u) => [u.userId, u]))
+      const availabilityData = await this.getAvailability(date)
+      const availabilityMap = new Map<number, Consultant>()
+      availabilityData.forEach((data) => {
+        const user = usersMap.get(data.userId)
+        const mapped = availabilityMap.get(data.userId)
+        if (user && mapped) {
+          // user has several availability entries
+          availabilityMap.set(data.userId, {
+            ...user,
+            availability: -1,
+          })
+        } else if (user && !mapped) {
+          // user availability not yet mapped
+          availabilityMap.set(data.userId, {
+            ...user,
+            availability: Number(Boolean(data.availability)),
+          })
+        } else {
+          // user not found
         }
       })
-      return consultants
+      return Array.from(availabilityMap, ([_, value]) => value)
     })
   }
 
-  async getAvailableConsultants(date: string = TODAY): Promise<Consultant[]> {
-    const consultants = await this.getConsultants(date)
-    return consultants.filter(({ availability }) => availability > 0)
-  }
-
-  async getUnavailableConsultants(date: string = TODAY): Promise<Consultant[]> {
-    const consultants = await this.getConsultants(date)
-    return consultants.filter(({ availability }) => availability === 0)
-  }
-
-  async getStatistics(date: string = TODAY): Promise<UsersStats> {
-    const consultants = await this.getConsultants(date)
-    const available = await this.getAvailableConsultants(date)
-    return {
-      available: available.length,
-      total: consultants.length,
-    }
+  async getUserStatistics(date: string = TODAY): Promise<UsersStats> {
+    return cacheRequest(`USER-STATISTICS-${date}`, async () => {
+      const consultants = await this.getConsultantsByAvailability(date)
+      const total = Object.values(consultants).flat()
+      return {
+        available: {
+          rawValue: consultants.available.length,
+          percentage: getPercent(consultants.available.length, total.length),
+        },
+        unavailable: {
+          rawValue: consultants.unavailable.length,
+          percentage: getPercent(consultants.unavailable.length, total.length),
+        },
+        other: {
+          rawValue: consultants.other.length,
+          percentage: getPercent(consultants.other.length, total.length),
+        },
+        total: total.length,
+      }
+    })
   }
 }
 
