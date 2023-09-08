@@ -21,6 +21,7 @@ export const GOOGLE_REDIRECT_URI = ensureEnv('GOOGLE_OIDC_REDIRECT_URI')
 
 export const SESSION_KEY = 'roses-are-red-cookie-monsters-blue-i<3u'
 export const SESSION_MAX_AGE = 1000 * 60 * 60 * 24 // 24 hours
+export const TODAY = new Intl.DateTimeFormat('sv-SE').format(new Date())
 
 export const FRONTEND_APP = fs.readFileSync(`../public/index.html`, 'utf-8')
 export const FRONTEND_URL = 'https://localhost:5173'

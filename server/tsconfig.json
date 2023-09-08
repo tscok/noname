@@ -114,9 +114,12 @@
   "include": [
     "./auth/*",
     "./cert/*",
-    "./cinode/*",
+    "api/*",
     "./index.ts",
-    "./config.ts", "cinode/utils/hasTitle.ts",
+    "./config.ts",
+    "api/utils/hasTitle.ts",
+    "api/users.ts",
+    "api/cinode/__generated__", "api/cinode/CinodeApi.ts", "api/apiClient.ts",
   ],
   "exclude": [
     "node_modules",

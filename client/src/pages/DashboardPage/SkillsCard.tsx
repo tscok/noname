@@ -1,16 +1,14 @@
 import { FC } from 'react'
-import { DateTime } from 'luxon'
+import { useAtomValue } from 'jotai'
 
-import { useSkills, useTimespan } from './hooks'
-import { BarChart, StatsCard } from './components'
+import { dateAtom } from '../../store'
 import { Div } from '../../ui'
+import { BarChart, StatsCard } from './components'
+import { useSkillStatistics, useTimespan } from './hooks'
 
-type SkillsCardProps = {
-  startDate: DateTime
-}
-
-export const SkillsCard: FC<SkillsCardProps> = ({ startDate }) => {
-  const { data, error, status } = useSkills(startDate)
+export const SkillsCard: FC = () => {
+  const startDate = useAtomValue(dateAtom)
+  const { data, error, status } = useSkillStatistics(startDate)
   const [dateFrom, dateTo] = useTimespan(startDate)
 
   return (
@@ -26,15 +24,15 @@ export const SkillsCard: FC<SkillsCardProps> = ({ startDate }) => {
           datasets={[
             {
               label: 'Users',
-              data: data.skills.map((skill) => skill.stats.users),
+              data: data.skills.map((skill) => skill.users),
             },
             {
               label: 'Avg Level',
-              data: data.skills.map((skill) => skill.stats.avgLevel),
+              data: data.skills.map((skill) => skill.avgLevel),
             },
             {
               label: 'Favourites',
-              data: data.skills.map((skill) => skill.stats.favourites),
+              data: data.skills.map((skill) => skill.favourites),
             },
           ]}
           labels={data.skills.map((skill) => skill.name)}

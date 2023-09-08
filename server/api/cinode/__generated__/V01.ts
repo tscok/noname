@@ -100,6 +100,8 @@ import {
   CompanyUserSubcontractorBaseModel,
   CompanyUserSubcontractorFileAttachmentListModel,
   CompanyUserSubcontractorModel,
+  CompanyUserSubcontractorRoleMemberModel,
+  CompanyUserSubcontractorRolesModel,
   ConvertCompanyUserToAadAccountModel,
   CurrencyModel,
   CustomerEventBaseModel,
@@ -3938,6 +3940,41 @@ This action is irreversible, use with caution
       method: "POST",
       body: data,
       type: ContentType.FormData,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Requires access level: CompanyManager. Requires module: Assignments.
+   *
+   * @tags CompanyUserSubcontractorRoles
+   * @name GetSubcontractorRoles
+   * @summary Get assigned and prospect roles for subcontractor
+   * @request GET:/v0.1/companies/{companyId}/subcontractors/{subcontractorId}/roles
+   */
+  getSubcontractorRoles = (companyId: number, subcontractorId: number, params: RequestParams = {}) =>
+    this.request<CompanyUserSubcontractorRolesModel, ValidationModel | void | ErrorModel>({
+      path: `/v0.1/companies/${companyId}/subcontractors/${subcontractorId}/roles`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Requires access level: CompanyManager. Requires module: Assignments.
+   *
+   * @tags CompanyUserSubcontractorRoles
+   * @name GetSubcontractorRole
+   * @summary Get a specific role, assigned and or prospected, for subcontractor by role id
+   * @request GET:/v0.1/companies/{companyId}/subcontractors/{subcontractorId}/roles/{projectAssignmentId}
+   */
+  getSubcontractorRole = (
+    companyId: number,
+    subcontractorId: number,
+    projectAssignmentId: number,
+    params: RequestParams = {},
+  ) =>
+    this.request<CompanyUserSubcontractorRoleMemberModel, ValidationModel | void | ErrorModel>({
+      path: `/v0.1/companies/${companyId}/subcontractors/${subcontractorId}/roles/${projectAssignmentId}`,
+      method: "GET",
       format: "json",
       ...params,
     });
