@@ -36,7 +36,7 @@ class StatisticsClient {
     return cacheRequest(`STATISTIC-SKILLS-${date}`, async () => {
       const users = await usersClient.getUsersByFilter('AVAILABLE', date)
       const skills = await skillsClient.getSkillsWithStats(users, date)
-      return skills.sort(sortBySkillStats).slice(0, limit)
+      return skills.sort((a, b) => sortBySkillStats(b, a)).slice(0, limit)
     })
   }
 }
