@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { DateTime } from 'luxon'
 
-import UserClient from '../../../api/UserClient'
+import UserClient from '../../../api/ApiClient'
 import useQuery, { QueryStatus } from '../../../utils/useQuery'
 import { SkillWithStats } from '@backend/*'
 
@@ -17,11 +17,11 @@ type ReturnValue = {
   status: QueryStatus
 }
 
-export const useSkills = (date: DateTime = TODAY): ReturnValue => {
+export const useSkillStatistics = (date: DateTime = TODAY): ReturnValue => {
   const startDate = String(date.toISODate())
 
   const queryCallback = useCallback(
-    async () => await UserClient.getSkills(startDate, SKILLS_LIMIT),
+    async () => await UserClient.getSkillStatistics(startDate, SKILLS_LIMIT),
     [startDate]
   )
 

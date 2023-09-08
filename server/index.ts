@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import fastify, { FastifyRequest } from 'fastify'
+import fastify from 'fastify'
 import fastifyStatic from '@fastify/static'
 import fastifyCors from '@fastify/cors'
 import fastifyCookie from '@fastify/cookie'
@@ -7,7 +7,7 @@ import { fastifySession, SessionStore } from '@fastify/session'
 import sessionFileStore from 'session-file-store'
 import path from 'path'
 
-import { userClient } from './cinode'
+import { usersClient, skillsClient, statisticsClient } from './api'
 import { getAuthenticationUrl, getAuthenticatedUser } from './auth/googleAuth'
 import { HTTPS_CERT, HTTPS_KEY } from './cert'
 import {
@@ -17,6 +17,7 @@ import {
   FRONTEND_ROUTE,
   FRONTEND_URL,
 } from './config'
+import { Skill } from './types'
 
 const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || 8080
@@ -100,17 +101,43 @@ server.get('/auth/logout', async (req, reply) => {
 // Expose current user
 server.get('/auth/me', (req) => req.user)
 
-server.get('/api/users/statistics/:startDate', async (req) => {
-  const { startDate } = req.params as { startDate: string }
-  return await userClient.getUserStatistics(startDate)
+// API endpoints
+server.get('/api/users/available', async () => {
+  return await usersClient.getUsersByFilter('AVAILABLE')
 })
 
-server.get('/api/users/statistics/:startDate/skills/:limit', async (req) => {
+server.get('/api/skills', async () => {
+  const users = await usersClient.getUsersByFilter('ALL')
+  return await skillsClient.getAllSkills(users)
+})
+
+server.get('/api/search/skills', async (req) => {
+  const { name } = req.query as { name: string }
+  const users = await usersClient.getUsersByFilter('ALL')
+  return await skillsClient.getSkillsByName(users, name)
+})
+
+server.post('/api/search/skills/users', {}, async (req) => {
+  const { startDate, input } = JSON.parse(req.body as string) as {
+    startDate: string
+    input: Skill['id'][]
+  }
+  const users = await usersClient.getUsersByFilter('AVAILABLE', startDate)
+  const skills = await skillsClient.getSkillsByUsers(users)
+  return await usersClient.getUsersBySkills(input, users, skills)
+})
+
+server.get('/api/statistics/:startDate/users', async (req) => {
+  const { startDate } = req.params as { startDate: string }
+  return await statisticsClient.getUserStatistics(startDate)
+})
+
+server.get('/api/statistics/:startDate/skills/:limit', async (req) => {
   const { startDate, limit } = req.params as {
     startDate: string
     limit: number
   }
-  return await userClient.getSkillStatistics(startDate, limit)
+  return await statisticsClient.getSkillStatistics(startDate, limit)
 })
 
 // Start server

@@ -1,32 +1,24 @@
-import { FC, useState } from 'react'
-import { DateTime } from 'luxon'
-import { Stack } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { FC } from 'react'
+import { useAtom } from 'jotai'
 
-import { Page, PageTitle } from '../../ui'
+import { Page, PageContent, PageHeader } from '../../ui'
 import { AvailabilityCard } from './AvailabilityCard'
 import { SkillsCard } from './SkillsCard'
+import { dateAtom } from '../../store'
 
 export const DashboardPage: FC = () => {
-  const [dateTime, setDateTime] = useState<DateTime>(DateTime.now())
+  const [date, setDate] = useAtom(dateAtom)
 
   return (
     <Page>
-      <Stack spacing={2}>
-        <Stack direction="row" justifyContent="space-between">
-          <PageTitle>Dashboard</PageTitle>
-          <DatePicker
-            label="From"
-            onChange={(newValue) => newValue && setDateTime(newValue)}
-            slotProps={{ textField: { size: 'small' } }}
-            value={dateTime}
-          />
-        </Stack>
-        <Stack direction={{ lg: 'row' }} spacing={2}>
-          <AvailabilityCard startDate={dateTime} />
-          <SkillsCard startDate={dateTime} />
-        </Stack>
-      </Stack>
+      <PageHeader
+        datePickerProps={{ onChange: setDate, value: date }}
+        title="Dashboard"
+      />
+      <PageContent direction={{ lg: 'row' }}>
+        <AvailabilityCard />
+        <SkillsCard />
+      </PageContent>
     </Page>
   )
 }

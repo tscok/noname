@@ -1,4 +1,5 @@
 export * from './Avatar'
+export * from './DatePicker'
 export * from './Div'
 export * from './Divider'
 export * from './Spinner'
@@ -16,6 +17,8 @@ export * from './nav/TabletMenu'
 export * from './nav/TabletMenuItem'
 
 export * from './page/Page'
+export * from './page/PageContent'
+export * from './page/PageHeader'
 export * from './page/PageTitle'
 
 export * from './text/Heading'

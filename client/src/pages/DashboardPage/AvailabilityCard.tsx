@@ -1,17 +1,15 @@
 import { FC } from 'react'
-import { DateTime } from 'luxon'
 import { Stack } from '@mui/material'
+import { useAtomValue } from 'jotai'
 
-import { Legend, PieChart, StatsCard } from './components'
-import { useStats, useTimespan } from './hooks'
+import { dateAtom } from '../../store'
 import { Div } from '../../ui'
+import { Legend, PieChart, StatsCard } from './components'
+import { useUserStatistics, useTimespan } from './hooks'
 
-type AvailabilityCardProps = {
-  startDate: DateTime
-}
-
-export const AvailabilityCard: FC<AvailabilityCardProps> = ({ startDate }) => {
-  const { data, error, status } = useStats(startDate)
+export const AvailabilityCard: FC = () => {
+  const startDate = useAtomValue(dateAtom)
+  const { data, error, status } = useUserStatistics(startDate)
   const [dateFrom, dateTo] = useTimespan(startDate)
 
   return (

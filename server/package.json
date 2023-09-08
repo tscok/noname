@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json",
     "start": "nodemon --exec ts-node index.ts",
-    "update:api": "npx swagger-typescript-api -p https://api.cinode.com/swagger/v0.1/swagger.json -o ./cinode/__generated__ --modular"
+    "update:api": "npx swagger-typescript-api -p https://api.cinode.com/swagger/v0.1/swagger.json -o ./api/cinode/__generated__ --modular"
   },
   "keywords": [],
   "author": "",

@@ -1,3 +1,4 @@
+export * from './UsersPage/UsersPage'
 export * from './DashboardPage/DashboardPage'
 export * from './ErrorPage'
 export * from './LoginPage'

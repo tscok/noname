@@ -1,29 +1,35 @@
+export type UserId = number
+
 export type User = {
-  firstName: string
+  availability?: number
+  fullName: string
   image: UserImage
-  lastName: string
-  title?: string
-  userId: number
+  skills?: UserSkill[]
+  title: string
+  userId: UserId
 }
 
 export type UserAvailability = {
   availability: number
-  userId: number
-}
-
-export type Consultant = User & UserAvailability
-
-export type ConsultantAvailability = {
-  available: Consultant[]
-  unavailable: Consultant[]
-  other: Consultant[]
+  userId: UserId
 }
 
 export type Skill = {
-  favourite: boolean
   id: number
-  level: number
   name: string
+}
+
+export type UserSkill = Skill & {
+  favourite: boolean
+  level: number
+  userId: UserId
+}
+
+export type SkillWithStats = {
+  name: string
+  avgLevel: number
+  favourites: number
+  users: number
 }
 
 export type UserImage = {
@@ -31,19 +37,7 @@ export type UserImage = {
   smallImageUrl: string
 }
 
-export type SkillWithStats = {
-  id: number
-  name: string
-  stats: SkillStats
-}
-
-export type SkillStats = {
-  avgLevel: number
-  favourites: number
-  users: number
-}
-
-export type UsersStats = {
+export type UserStatistics = {
   available: {
     rawValue: number
     percentage: number

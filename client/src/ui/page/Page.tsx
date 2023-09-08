@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren } from 'react'
 import Container from '@mui/material/Container'
+import { Stack } from '@mui/material'
 
 const centeredPage = {
   alignItems: 'center',
@@ -13,10 +14,8 @@ interface PageProps extends PropsWithChildren {
   centered?: boolean
 }
 
-export const Page: FC<PageProps> = ({ centered, ...props }) => (
-  <Container
-    {...props}
-    maxWidth="xl"
-    sx={centered ? centeredPage : { mt: 2 }}
-  />
+export const Page: FC<PageProps> = ({ centered, children }) => (
+  <Container maxWidth="xl" sx={centered ? centeredPage : { mt: 2 }}>
+    <Stack spacing={2}>{children}</Stack>
+  </Container>
 )

@@ -1,5 +1,5 @@
 import { ACCESS_ID, ACCESS_SECRET, COMPANY_ID } from '../config'
-import CinodeApi from './CinodeApi'
+import CinodeApi from './cinode/CinodeApi'
 
 const api = new CinodeApi(ACCESS_ID, ACCESS_SECRET)
 

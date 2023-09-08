@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { DateTime } from 'luxon'
 
-import UserClient from '../../../api/UserClient'
+import UserClient from '../../../api/ApiClient'
 import useQuery, { QueryStatus } from '../../../utils/useQuery'
 
 const TODAY = DateTime.now()
@@ -19,11 +19,11 @@ const DEFAULT_DATA = {
   total: 0,
 }
 
-export const useStats = (date: DateTime = TODAY): ReturnValue => {
+export const useUserStatistics = (date: DateTime = TODAY): ReturnValue => {
   const startDate = String(date.toISODate())
 
   const queryCallback = useCallback(
-    async () => await UserClient.getStats(startDate),
+    async () => await UserClient.getUserStatistics(startDate),
     [startDate]
   )
 

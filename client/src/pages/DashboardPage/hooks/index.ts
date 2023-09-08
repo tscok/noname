@@ -1,3 +1,3 @@
-export * from './useSkills'
-export * from './useStats'
+export * from './useSkillStatistics'
+export * from './useUserStatistics'
 export * from './useTimespan'

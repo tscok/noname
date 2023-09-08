@@ -274,6 +274,11 @@ export interface CommitmentBlockItemModel {
 }
 
 export interface CommitmentBlockModel {
+  hideInEdit?: boolean;
+  hideTitle?: boolean;
+  hideDescription?: boolean;
+  hideText?: boolean;
+  hideUrl?: boolean;
   data?: CommitmentBlockItemModel[] | null;
   /** @format uuid */
   blockId?: string;
@@ -2651,6 +2656,21 @@ export interface CompanyUserSubcontractorModel {
   links?: Link[] | null;
 }
 
+export interface CompanyUserSubcontractorRoleMemberModel {
+  /** @format int32 */
+  projectAssignmentId?: number;
+  /** @format int32 */
+  assignmentTariff?: number | null;
+  currency?: CurrencyModel | null;
+  currentState?: ProjectAssignmentMemberStateHistoryModel | null;
+  projectAssignment?: ProjectAssignmentBaseModel | null;
+}
+
+export interface CompanyUserSubcontractorRolesModel {
+  assigned?: CompanyUserSubcontractorRoleMemberModel[] | null;
+  prospect?: CompanyUserSubcontractorRoleMemberModel[] | null;
+}
+
 /**
  *
  *
@@ -4418,6 +4438,11 @@ export enum ProjectAssignmentMemberState {
   Deferred = 40,
 }
 
+export interface ProjectAssignmentMemberStateHistoryModel {
+  state?: ProjectAssignmentMemberState;
+  note?: string | null;
+}
+
 export interface ProjectAssignmentMemberSubcontractorAddModel {
   /** @format int32 */
   groupId?: number | null;
@@ -5244,12 +5269,13 @@ export interface SearchCompanyCustomerResultModel {
 
 export interface SearchCompanyUserQueryModel {
   term?: string | null;
+  includeDisconnected?: boolean;
   pageAndSortBy?: CompanyUserQuerySortPageAndSortByModel | null;
 }
 
 export interface SearchCompanyUserResultModel {
   pagedAndSortedBy?: CompanyUserQuerySortPageAndSortByModel | null;
-  result?: CompanyUserBaseModel[] | null;
+  result?: CompanyUserExtendedModel[] | null;
   /** @format int32 */
   hits?: number;
   /** @format int32 */

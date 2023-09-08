@@ -13,6 +13,7 @@ import {
   LogoutPage,
   ProfilePage,
   StartPage,
+  UsersPage,
 } from './pages'
 import { store, userAtom } from './store'
 import AuthClient from './api/AuthClient'
@@ -55,6 +56,11 @@ const routes: RouteObject[] = [
       {
         path: 'dashboard',
         element: <DashboardPage />,
+        loader: authRequired,
+      },
+      {
+        path: 'users',
+        element: <UsersPage />,
         loader: authRequired,
       },
       {

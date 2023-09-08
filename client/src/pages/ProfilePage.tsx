@@ -1,11 +1,12 @@
 import { FC } from 'react'
+import { useAtomValue } from 'jotai'
 
 import { LogoutButton } from '../components'
 import { Avatar, Div, Heading, Page, Paragraph } from '../ui'
-import { useUser } from '../store'
+import { userAtom } from '../store'
 
 export const ProfilePage: FC = () => {
-  const user = useUser()
+  const user = useAtomValue(userAtom)
 
   return (
     <Page centered>

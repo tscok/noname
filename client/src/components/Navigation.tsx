@@ -1,5 +1,6 @@
 import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAtom, useAtomValue } from 'jotai'
 
 import {
   Div,
@@ -14,13 +15,23 @@ import {
   UserIconButton,
 } from '../ui'
 import { APP_NAME } from '../utils/config'
-import { useMode, useUser } from '../store'
+import { modeAtom, userAtom } from '../store'
+
+type Page = {
+  label: string
+  path: string
+}
+
+const pages: Page[] = [
+  { label: 'Dashboard', path: '/dashboard' },
+  { label: 'Users', path: '/users' },
+]
 
 const Navigation: FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [mode, setMode] = useMode()
+  const [mode, setMode] = useAtom(modeAtom)
+  const user = useAtomValue(userAtom)
   const navigate = useNavigate()
-  const user = useUser()
 
   const toggleMenu = () => {
     setMenuOpen((prevState) => !prevState)
@@ -36,7 +47,11 @@ const Navigation: FC = () => {
         <MenuIconButton onClick={toggleMenu} />
         <NavBarTitle>{APP_NAME}</NavBarTitle>
         <TabletMenu>
-          <TabletMenuItem to="/dashboard">Dashboard</TabletMenuItem>
+          {pages.map((page) => (
+            <TabletMenuItem key={page.path} to={page.path}>
+              {page.label}
+            </TabletMenuItem>
+          ))}
         </TabletMenu>
         <Div flexGrow={1} />
         <ModeIconButton mode={mode} onClick={toggleMode} />
@@ -47,9 +62,11 @@ const Navigation: FC = () => {
         />
       </NavBar>
       <MobileMenu onClose={toggleMenu} open={menuOpen}>
-        <MobileMenuItem onClick={toggleMenu} to="/dashboard">
-          Dashboard
-        </MobileMenuItem>
+        {pages.map((page) => (
+          <MobileMenuItem key={page.path} onClick={toggleMenu} to={page.path}>
+            {page.label}
+          </MobileMenuItem>
+        ))}
       </MobileMenu>
     </>
   )
