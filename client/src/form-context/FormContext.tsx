@@ -9,7 +9,7 @@ export type FormContextType<T extends object> = {
   state: T
 }
 
-export const FormContext = createContext<FormContextType<any>>(undefined as any)
+export const FormContext = createContext<FormContextType<object> | null>(null)
 
 interface FormProviderProps<T> {
   children: ReactNode

@@ -27,7 +27,7 @@ export const SkillSearchForm: FC = () => {
       const result = await UserClient.getUsersBySkills(startDate, skillIds)
       setFilteredUsers(result)
     },
-    [date]
+    [date, setFilteredUsers]
   )
 
   return (
