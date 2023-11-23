@@ -14,9 +14,9 @@ import {
 } from '../../store'
 
 const useUsers = (skills: Skill[]) => {
-  return skills.length > 0
-    ? useAtomValue(filteredUsersAtom)
-    : useAtomValue(availableUsersAtom)
+  const filteredUsers = useAtomValue(filteredUsersAtom)
+  const availableUsers = useAtomValue(availableUsersAtom)
+  return skills.length > 0 ? filteredUsers : availableUsers
 }
 
 export const UsersPage: FC = () => {

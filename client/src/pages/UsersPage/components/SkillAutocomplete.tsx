@@ -1,9 +1,10 @@
 import { FC, useCallback, useEffect, useState } from 'react'
-import { Autocomplete, Chip, TextField, debounce } from '@mui/material'
+import { Autocomplete, Chip, TextField } from '@mui/material'
 import { Skill } from '@backend/*'
 
 import UserClient from '../../../api/ApiClient'
 import { Spinner } from '../../../ui'
+import { useDebounce } from '../../../utils'
 
 type SkillAutocompleteProps = {
   loading: boolean
@@ -18,21 +19,23 @@ export const SkillAutocomplete: FC<SkillAutocompleteProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('')
   const [options, setOptions] = useState<Skill[]>([])
+  const debounce = useDebounce()
 
-  const fetch = useCallback(
-    debounce(async (q: string) => {
-      const result = await UserClient.getSkillsByName(q)
-      setOptions(result)
-    }, 400),
-    []
+  const fetch = useCallback(async (q: string) => {
+    const result = await UserClient.getSkillsByName(q)
+    setOptions(result)
+  }, [])
+
+  const debouncedFetch = useCallback(
+    () => debounce(() => fetch(inputValue)),
+    [debounce, fetch, inputValue]
   )
 
   useEffect(() => {
-    if (inputValue === '') {
-      return undefined
+    if (inputValue !== '') {
+      debouncedFetch()
     }
-    fetch(inputValue)
-  }, [fetch, inputValue])
+  }, [debouncedFetch, inputValue])
 
   return (
     <Autocomplete

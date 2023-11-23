@@ -2,8 +2,8 @@ type Callback = (...args: unknown[]) => void
 
 export function debouncer<T extends Callback>(ms: number) {
   let timer: ReturnType<typeof setTimeout>
-  return (fn: T) => {
+  return (cb: T) => {
     clearTimeout(timer)
-    timer = setTimeout(() => fn(), ms)
+    timer = setTimeout(() => cb(), ms)
   }
 }

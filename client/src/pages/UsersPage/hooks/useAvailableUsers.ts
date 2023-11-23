@@ -1,9 +1,10 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSetAtom } from 'jotai'
 
 import UserClient from '../../../api/ApiClient'
 import useQuery from '../../../utils/useQuery'
 import { availableUsersAtom } from '../../../store'
+import { User } from '@backend/*'
 
 export const useAvailableUsers = () => {
   const setAvailableUsers = useSetAtom(availableUsersAtom)
@@ -15,11 +16,14 @@ export const useAvailableUsers = () => {
 
   const { data, error, status } = useQuery(queryCallback)
 
+  const availableUsers: User[] = useMemo(
+    () => (!!data && !error && status === 'idle' ? data : []),
+    [data, error, status]
+  )
+
   useEffect(() => {
-    if (data && !error && status === 'idle') {
-      setAvailableUsers(data)
-    }
-  }, [data, error, status])
+    setAvailableUsers(availableUsers)
+  }, [availableUsers, setAvailableUsers])
 
   return { data, error, status }
 }

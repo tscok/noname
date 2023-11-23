@@ -1,5 +1,5 @@
 export default class Client {
-  async makeRequest(path: string, method: 'GET' | 'POST', body?: any) {
+  async makeRequest(path: string, method: 'GET' | 'POST', body?: unknown) {
     try {
       const response = await fetch(
         new Request(path, { method, body: JSON.stringify(body) })
@@ -15,7 +15,7 @@ export default class Client {
     return this.makeRequest(path, 'GET')
   }
 
-  post(path: string, body?: any) {
+  post(path: string, body?: unknown) {
     return this.makeRequest(path, 'POST', body)
   }
 }
